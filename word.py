@@ -107,7 +107,7 @@ if convert_btn:
                     st.download_button(
                         label="결과물 다운로드 (.docx)",
                         data=bio,
-                        file_name=f"{product_name}_변환결과.docx",
+                        file_name=f"{product_name} SPEC.docx",
                         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                         use_container_width=True
                     )
@@ -115,3 +115,4 @@ if convert_btn:
             except Exception as e:
                 st.error(f"오류가 발생했습니다: {e}")
                 st.info("템플릿 폴더에 태그가 적용된 spec.docx 파일이 있는지 확인해주세요.")
+
