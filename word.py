@@ -27,7 +27,7 @@ with col1:
 with col2:
     st.subheader("2. 정보 입력 및 옵션")
     product_name = st.text_input("제품명")
-    mode = st.selectbox("모드 선택", ["CFF", "HP", "HPD"])
+    mode = st.selectbox("모드 선택", ["CFF", "HP"])
 
 st.divider()
 
@@ -82,12 +82,22 @@ if convert_btn:
                         context["RI"] = f"{ri_base - 0.005:.3f} ~ {ri_base + 0.005:.3f}"
 
                 elif mode == "HP":
-                    # TODO: HP 모드 로직 작성
-                    st.info("HP 모드 로직이 아직 구현되지 않았습니다. 기본값이 적용됩니다.")
+                    # COLOR 추출
+                    color_match = re.search(r'■\s*COLOR\s*:(.*?)■\s*APPEARANCE\s*:', pdf_text, re.DOTALL | re.IGNORECASE)
+                    if color_match:
+                        context["COLOR"] = color_match.group(1).strip().upper()
                     
-                elif mode == "HPD":
-                    # TODO: HPD 모드 로직 작성
-                    st.info("HPD 모드 로직이 아직 구현되지 않았습니다. 기본값이 적용됩니다.")
+                    # SPECIFIC GRAVITY 계산 (d^20_20 같은 텍스트 변형을 고려해 포괄적인 정규식 사용)
+                    sg_match = re.search(r'■\s*SPECIFIC GRAVITY.*?\:\s*([\d\.]+)\s*[±\+/-]\s*[\d\.]+', pdf_text, re.IGNORECASE)
+                    if sg_match:
+                        sg_base = float(sg_match.group(1))
+                        context["SG"] = f"{sg_base - 0.01:.3f} ~ {sg_base + 0.01:.3f}"
+                        
+                    # REFRACTIVE INDEX 계산
+                    ri_match = re.search(r'■\s*REFRACTIVE INDEX.*?\:\s*([\d\.]+)\s*[±\+/-]\s*[\d\.]+', pdf_text, re.IGNORECASE)
+                    if ri_match:
+                        ri_base = float(ri_match.group(1))
+                        context["RI"] = f"{ri_base - 0.005:.3f} ~ {ri_base + 0.005:.3f}"
 
                 # 워드 템플릿 불러오기 및 데이터 렌더링
                 doc_path = get_resource_path("templates/spec.docx")
@@ -115,3 +125,4 @@ if convert_btn:
             except Exception as e:
                 st.error(f"오류가 발생했습니다: {e}")
                 st.info("템플릿 폴더에 태그가 적용된 spec.docx 파일이 있는지 확인해주세요.")
+
