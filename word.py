@@ -16,7 +16,7 @@ def get_resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 # --- 2. Streamlit UI 구성 ---
-st.title("📄 PDF to Word 자동 변환기")
+st.title("SPEC 양식 변환기")
 
 col1, col2 = st.columns(2)
 
@@ -125,4 +125,3 @@ if convert_btn:
             except Exception as e:
                 st.error(f"오류가 발생했습니다: {e}")
                 st.info("템플릿 폴더에 태그가 적용된 spec.docx 파일이 있는지 확인해주세요.")
-
